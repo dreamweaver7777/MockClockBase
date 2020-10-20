@@ -20,38 +20,55 @@ public:
     virtual std::time_t now() const = 0;
 };
 
-class TenSecondClock : public Clock {
+class MockClock : public Clock {
  public:
+    MockClock(std::time_t amount)
+        : length(amount) {}
+
     virtual std::time_t start() const {
         return 0;
     }
 
     virtual std::time_t now() const {
-        return 10;
+        return length;
     }
+private:
+    std::time_t length;
 };
 
-class TenMinuteClock : public Clock {
- public:
-    virtual std::time_t start() const {
-        return 0;
-    }
 
-    virtual std::time_t now() const {
-        return 10 * 60;
-    }
-};
+// class TenSecondClock : public Clock {
+//  public:
+//     virtual std::time_t start() const {
+//         return 0;
+//     }
 
-class TenHourClock : public Clock {
- public:
-    virtual std::time_t start() const {
-        return 0;
-    }
+//     virtual std::time_t now() const {
+//         return 10;
+//     }
+// };
 
-    virtual std::time_t now() const {
-        return 10 * 60 * 60;
-    }
-};
+// class TenMinuteClock : public Clock {
+//  public:
+//     virtual std::time_t start() const {
+//         return 0;
+//     }
+
+//     virtual std::time_t now() const {
+//         return 10 * 60;
+//     }
+// };
+
+// class TenHourClock : public Clock {
+//  public:
+//     virtual std::time_t start() const {
+//         return 0;
+//     }
+
+//     virtual std::time_t now() const {
+//         return 10 * 60 * 60;
+//     }
+// };
 
 class TimeClock : public Clock {
 public:
@@ -98,7 +115,7 @@ int main() {
 
     // 10-second session
     {
-        TenSecondClock clock;
+        MockClock clock(10);
         Session s(clock);
         // ...
         s.stop();
@@ -107,16 +124,16 @@ int main() {
 
     // 10-minute session
     {
-        TenMinuteClock clock;
+        MockClock clock(600);
         Session s(clock);
         // ...
         s.stop();
-        assert(s.seconds() == 10 * 60);
+        assert(s.seconds() == 600);
     }
 
-    // 10-minute session
+    // 10-hour session
     {
-        TenHourClock clock;
+        MockClock clock(10 * 60 * 60);
         Session s(clock);
         // ...
         s.stop();
